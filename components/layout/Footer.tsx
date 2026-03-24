@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ShoppingBag, Mail, Phone } from 'lucide-react'
+import { ShoppingBag, Phone } from 'lucide-react'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -21,18 +21,11 @@ export default function Footer() {
             </p>
             <div className="space-y-2">
               <a
-                href="mailto:hello@zimmall.co.zw"
-                className="flex items-center gap-2 text-sm hover:text-white transition-colors"
-              >
-                <Mail className="h-4 w-4" />
-                hello@zimmall.co.zw
-              </a>
-              <a
-                href="tel:+2637712345678"
+                href="tel:+263777308785"
                 className="flex items-center gap-2 text-sm hover:text-white transition-colors"
               >
                 <Phone className="h-4 w-4" />
-                +263 77 123 4567
+                +263 777 308 785
               </a>
             </div>
           </div>
