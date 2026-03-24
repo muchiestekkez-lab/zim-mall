@@ -11,6 +11,12 @@ const inter = Inter({
   display: 'swap',
 })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+}
+
 export const metadata: Metadata = {
   title: {
     default: 'ZIM MALL — Zimbabwe\'s Premier Online Marketplace',

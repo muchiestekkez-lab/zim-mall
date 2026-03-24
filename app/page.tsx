@@ -62,19 +62,19 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
           <div className="max-w-3xl">
-            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4">
               Zimbabwe&apos;s Premier{' '}
               <span className="text-brand-500">Online Marketplace</span>
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
               Connect with local sellers across Zimbabwe. Buy and sell electronics, clothing,
               vehicles, services and more — all in one place.
             </p>
 
             {/* Search */}
-            <form action="/search" className="flex gap-2 max-w-xl mb-8">
+            <form action="/search" className="flex flex-col sm:flex-row gap-2 max-w-xl mb-6 sm:mb-8">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
@@ -86,13 +86,13 @@ export default async function HomePage() {
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-lg transition-colors text-sm"
+                className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-lg transition-colors text-sm whitespace-nowrap"
               >
                 Search
               </button>
             </form>
 
-            <div className="flex items-center gap-6 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500">
               <span>
                 <span className="font-semibold text-gray-900">{stats.products.toLocaleString()}</span> products listed
               </span>
@@ -117,19 +117,19 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
             {categories.map((category) => {
               const Icon = category.icon
               return (
                 <Link
                   key={category.slug}
                   href={`/search?category=${category.slug}`}
-                  className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg border border-gray-200 hover:border-brand-300 hover:shadow-sm transition-all group"
+                  className="flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-4 bg-white rounded-lg border border-gray-200 hover:border-brand-300 hover:shadow-sm transition-all group min-h-[80px] sm:min-h-0 justify-center"
                 >
-                  <div className={`p-3 rounded-lg ${category.color}`}>
-                    <Icon className="h-6 w-6" />
+                  <div className={`p-2 sm:p-3 rounded-lg ${category.color}`}>
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center group-hover:text-brand-600 transition-colors">
+                  <span className="text-xs font-medium text-gray-700 text-center group-hover:text-brand-600 transition-colors leading-tight">
                     {category.name}
                   </span>
                 </Link>

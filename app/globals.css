@@ -13,17 +13,28 @@
 }
 
 @layer base {
-  * {
+  *, *::before, *::after {
     box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     @apply bg-white text-gray-900 antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Prevent horizontal overflow on all elements */
+  img, video, iframe, embed, object {
+    max-width: 100%;
+    height: auto;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -34,8 +45,23 @@
     @apply transition-colors;
   }
 
+  /* Mobile-friendly tap targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
   input, textarea, select {
     @apply outline-none;
+    /* Prevent iOS zoom on focus */
+    font-size: 16px;
+  }
+
+  /* Fix iOS input zoom — keep readable on desktop too */
+  @media (min-width: 640px) {
+    input, textarea, select {
+      font-size: 14px;
+    }
   }
 }
 

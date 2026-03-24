@@ -43,29 +43,29 @@ export default function Navbar({ session }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16 gap-4">
+        <div className="flex items-center h-14 sm:h-16 gap-2 sm:gap-4">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 flex-shrink-0 font-bold text-xl text-brand-600"
+            className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 font-bold text-lg sm:text-xl text-brand-600"
           >
-            <div className="w-8 h-8 bg-brand-500 rounded flex items-center justify-center">
-              <ShoppingBag className="h-5 w-5 text-white" />
+            <div className="w-8 h-8 bg-brand-500 rounded flex items-center justify-center flex-shrink-0">
+              <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </div>
             <span className="hidden sm:block">ZIM MALL</span>
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
+          <form onSubmit={handleSearch} className="flex-1 min-w-0">
             <div className="relative">
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, stores..."
-                className="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                placeholder="Search products..."
+                className="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
           </form>
 
@@ -191,37 +191,43 @@ export default function Navbar({ session }: NavbarProps) {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
+        <div className="md:hidden border-t border-gray-200 bg-white shadow-lg">
           <nav className="px-4 py-3 space-y-1">
-            <Link
-              href="/search"
-              className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-              onClick={() => setMobileOpen(false)}
-            >
+            <Link href="/search" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
               Browse All Products
             </Link>
-            <Link
-              href="/search?sort=popular"
-              className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-              onClick={() => setMobileOpen(false)}
-            >
+            <Link href="/search?sort=popular" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
               Popular Items
             </Link>
-            {!session && (
+
+            {session ? (
               <>
                 <hr className="my-2 border-gray-200" />
-                <Link
-                  href="/login"
-                  className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-                  onClick={() => setMobileOpen(false)}
-                >
+                {session.user?.role === 'ADMIN' && (
+                  <Link href="/admin" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
+                    <Shield className="h-4 w-4" /> Admin Panel
+                  </Link>
+                )}
+                {(session.user?.role === 'SELLER' || session.user?.role === 'ADMIN') && (
+                  <Link href="/dashboard" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  </Link>
+                )}
+                <Link href="/dashboard/store" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
+                  <Store className="h-4 w-4" /> My Store
+                </Link>
+                <hr className="my-2 border-gray-200" />
+                <button onClick={handleSignOut} className="flex items-center gap-2 w-full px-3 py-3 text-sm text-red-600 hover:bg-red-50 rounded-lg">
+                  <LogOut className="h-4 w-4" /> Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <hr className="my-2 border-gray-200" />
+                <Link href="/login" className="block px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
                   Log In
                 </Link>
-                <Link
-                  href="/signup"
-                  className="block px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50 rounded"
-                  onClick={() => setMobileOpen(false)}
-                >
+                <Link href="/signup" className="block px-3 py-3 text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg text-center" onClick={() => setMobileOpen(false)}>
                   Sign Up Free
                 </Link>
               </>
