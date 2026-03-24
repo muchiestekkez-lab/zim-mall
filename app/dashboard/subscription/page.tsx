@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { AlertCircle } from 'lucide-react'
 import PricingCard from '@/components/subscription/PricingCard'
-import PaynowCheckout from '@/components/subscription/PaynowCheckout'
+import PayPalCheckout from '@/components/subscription/PayPalCheckout'
 import { Modal } from '@/components/ui/Modal'
 import { LoadingPage } from '@/components/ui/Spinner'
 import { Badge } from '@/components/ui/Badge'
@@ -119,7 +119,7 @@ export default function SubscriptionPage() {
       </div>
 
       <p className="text-xs text-gray-400 text-center">
-        All plans are monthly subscriptions. Payments are processed via Paynow Zimbabwe.
+        All plans are monthly subscriptions. Payments are processed securely via PayPal.
         Cancel anytime — your plan stays active until the end of the billing period.
       </p>
 
@@ -131,7 +131,7 @@ export default function SubscriptionPage() {
         size="md"
       >
         {selectedPlan && data?.store && (
-          <PaynowCheckout
+          <PayPalCheckout
             plan={selectedPlan}
             storeId={data.store.id}
             onSuccess={handleSuccess}

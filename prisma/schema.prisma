@@ -126,8 +126,8 @@ model Subscription {
   plan             SubscriptionPlan   @default(STARTER)
   status           SubscriptionStatus @default(PENDING)
   amount           Float
-  paynowReference  String?
-  paynowPollUrl    String?
+  paypalOrderId    String?
+  paypalPayerId    String?
   startDate        DateTime?
   endDate          DateTime?
   createdAt        DateTime           @default(now())
