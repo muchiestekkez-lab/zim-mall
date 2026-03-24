@@ -1,35 +1,30 @@
-import { auth } from './lib/auth'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export default auth((req) => {
-  const { nextUrl, auth: session } = req
-  const isLoggedIn = !!session
-  const userRole = session?.user?.role
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  const { pathname } = req.nextUrl
 
-  // Protect dashboard routes - require SELLER or ADMIN role
-  if (nextUrl.pathname.startsWith('/dashboard')) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/login?callbackUrl=/dashboard', nextUrl))
+  if (pathname.startsWith('/dashboard')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/login?callbackUrl=/dashboard', req.url))
     }
-
-    if (userRole !== 'SELLER' && userRole !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/?error=not_seller', nextUrl))
+    if (token.role !== 'SELLER' && token.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/?error=not_seller', req.url))
     }
   }
 
-  // Protect admin routes - require ADMIN role
-  if (nextUrl.pathname.startsWith('/admin')) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/login?callbackUrl=/admin', nextUrl))
+  if (pathname.startsWith('/admin')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/login?callbackUrl=/admin', req.url))
     }
-
-    if (userRole !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/?error=unauthorized', nextUrl))
+    if (token.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/?error=unauthorized', req.url))
     }
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: ['/dashboard/:path*', '/admin/:path*'],
