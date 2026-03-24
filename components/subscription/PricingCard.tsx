@@ -2,7 +2,7 @@
 
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { SUBSCRIPTION_PLANS } from '@/lib/paynow'
+import { SUBSCRIPTION_PLANS } from '@/lib/paypal'
 import Button from '../ui/Button'
 
 type PlanKey = 'STARTER' | 'BUSINESS' | 'PREMIUM'
