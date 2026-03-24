@@ -128,24 +128,36 @@ export default function Navbar({ session }: NavbarProps) {
                       )}
 
                       {(session.user?.role === 'SELLER' || session.user?.role === 'ADMIN') && (
-                        <Link
-                          href="/dashboard"
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                          onClick={() => setUserMenuOpen(false)}
-                        >
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard
-                        </Link>
+                        <>
+                          <Link
+                            href="/dashboard"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
+                          </Link>
+                          <Link
+                            href="/dashboard/store"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <Store className="h-4 w-4" />
+                            My Store
+                          </Link>
+                        </>
                       )}
 
-                      <Link
-                        href="/dashboard/store"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <Store className="h-4 w-4" />
-                        My Store
-                      </Link>
+                      {session.user?.role === 'CUSTOMER' && (
+                        <Link
+                          href="/become-seller"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-brand-600 font-medium hover:bg-brand-50"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Store className="h-4 w-4" />
+                          Start Selling
+                        </Link>
+                      )}
 
                       <div className="border-t border-gray-100 mt-1 pt-1">
                         <button
@@ -209,13 +221,20 @@ export default function Navbar({ session }: NavbarProps) {
                   </Link>
                 )}
                 {(session.user?.role === 'SELLER' || session.user?.role === 'ADMIN') && (
-                  <Link href="/dashboard" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
-                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  <>
+                    <Link href="/dashboard" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
+                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    </Link>
+                    <Link href="/dashboard/store" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
+                      <Store className="h-4 w-4" /> My Store
+                    </Link>
+                  </>
+                )}
+                {session.user?.role === 'CUSTOMER' && (
+                  <Link href="/become-seller" className="flex items-center gap-2 px-3 py-3 text-sm text-brand-600 font-medium hover:bg-brand-50 rounded-lg" onClick={() => setMobileOpen(false)}>
+                    <Store className="h-4 w-4" /> Start Selling
                   </Link>
                 )}
-                <Link href="/dashboard/store" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
-                  <Store className="h-4 w-4" /> My Store
-                </Link>
                 <hr className="my-2 border-gray-200" />
                 <button onClick={handleSignOut} className="flex items-center gap-2 w-full px-3 py-3 text-sm text-red-600 hover:bg-red-50 rounded-lg">
                   <LogOut className="h-4 w-4" /> Sign Out

@@ -7,10 +7,10 @@ export async function proxy(req: NextRequest) {
 
   if (pathname.startsWith('/dashboard')) {
     if (!token) {
-      return NextResponse.redirect(new URL('/login?callbackUrl=/dashboard', req.url))
+      return NextResponse.redirect(new URL(`/login?callbackUrl=${pathname}`, req.url))
     }
     if (token.role !== 'SELLER' && token.role !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/?error=not_seller', req.url))
+      return NextResponse.redirect(new URL('/become-seller', req.url))
     }
   }
 
