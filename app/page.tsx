@@ -156,7 +156,7 @@ export default async function HomePage() {
             products={featuredProducts}
             emptyTitle="No products yet"
             emptyDescription="Be the first to list a product on ZIM MALL."
-            emptyAction={{ label: 'Start Selling', href: '/signup?role=seller' }}
+            emptyAction={{ label: 'Start Selling', href: '/become-seller' }}
           />
         </div>
       </section>
@@ -225,7 +225,7 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/signup?role=seller"
+                href="/become-seller"
                 className="px-6 py-3 bg-white hover:bg-gray-50 text-brand-700 font-semibold rounded-lg transition-colors"
               >
                 Open Your Store

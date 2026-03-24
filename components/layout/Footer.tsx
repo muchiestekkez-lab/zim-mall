@@ -59,7 +59,7 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Sell on ZIM MALL</h3>
             <ul className="space-y-2">
               {[
-                { label: 'Start Selling', href: '/signup?role=seller' },
+                { label: 'Start Selling', href: '/become-seller' },
                 { label: 'Seller Dashboard', href: '/dashboard' },
                 { label: 'Pricing Plans', href: '/dashboard/subscription' },
                 { label: 'Seller Guide', href: '#' },

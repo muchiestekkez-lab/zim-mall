@@ -72,7 +72,8 @@ export default function SignUpPage() {
   }
 
   const handleGoogleSignIn = async () => {
-    await signIn('google', { callbackUrl: '/' })
+    const dest = selectedRole === 'SELLER' ? '/become-seller' : '/'
+    await signIn('google', { callbackUrl: dest })
   }
 
   return (
