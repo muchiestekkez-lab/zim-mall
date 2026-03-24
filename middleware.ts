@@ -34,10 +34,10 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Pass pathname to layouts via header
-  const res = NextResponse.next()
-  res.headers.set('x-pathname', pathname)
-  return res
+  // Pass pathname to server components via request header
+  const requestHeaders = new Headers(req.headers)
+  requestHeaders.set('x-pathname', pathname)
+  return NextResponse.next({ request: { headers: requestHeaders } })
 }
 
 export const config = {
