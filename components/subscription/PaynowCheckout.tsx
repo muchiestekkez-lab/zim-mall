@@ -164,7 +164,7 @@ export function PaynowCheckout({ plan, storeId, onSuccess, onCancel }: PaynowChe
       )}
 
       {/* Actions */}
-      {state === 'idle' || state === 'failed' ? (
+      {state === 'idle' || state === 'failed' || state === 'creating' ? (
         <div className="flex gap-3">
           {onCancel && (
             <Button variant="secondary" onClick={onCancel} fullWidth>
