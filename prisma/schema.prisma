@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum SubscriptionPlan {
+  STARTER
+  BUSINESS
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  PENDING
+  CANCELLED
+}
+
+enum DeliveryType {
+  DELIVERY
+  PICKUP
+  BOTH
+}
+
+enum Condition {
+  NEW
+  USED
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  image         String?
+  role          Role      @default(CUSTOMER)
+  emailVerified DateTime?
+  isBanned      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  store    Store?
+  accounts Account[]
+  sessions Session[]
+  reviews  Review[]
+  reports  Report[]  @relation("ReportedBy")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Store {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  logo        String?
+  banner      String?
+  whatsapp    String?
+  phone       String?
+  location    String?
+  isVerified  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  sellerId    String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  seller       User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  products     Product[]
+  subscription Subscription?
+  reviews      Review[]
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  storeId          String             @unique
+  plan             SubscriptionPlan   @default(STARTER)
+  status           SubscriptionStatus @default(PENDING)
+  amount           Float
+  paynowReference  String?
+  paynowPollUrl    String?
+  startDate        DateTime?
+  endDate          DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id           String       @id @default(cuid())
+  name         String
+  slug         String       @unique
+  description  String       @db.Text
+  price        Float
+  images       String[]
+  category     String
+  location     String
+  deliveryType DeliveryType @default(BOTH)
+  condition    Condition    @default(NEW)
+  stock        Int          @default(1)
+  isActive     Boolean      @default(true)
+  isFeatured   Boolean      @default(false)
+  isApproved   Boolean      @default(true)
+  views        Int          @default(0)
+  storeId      String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  store   Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  reviews Review[]
+  reports Report[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?  @db.Text
+  userId    String
+  storeId   String?
+  productId String?
+  createdAt DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store   Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  reason      String
+  description String?      @db.Text
+  reportedBy  String
+  userId      String?
+  productId   String?
+  storeId     String?
+  status      ReportStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+
+  reporter User     @relation("ReportedBy", fields: [reportedBy], references: [id], onDelete: Cascade)
+  product  Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  icon     String?
+  parentId String?
+  parent   Category?  @relation("CategoryChildren", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryChildren")
+}
