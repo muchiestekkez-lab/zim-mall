@@ -3,10 +3,11 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export async function PATCH(req: Request, { params }: Params) {
+export async function PATCH(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const session = await auth()
     if (!session || session.user.role !== 'ADMIN') {
@@ -21,7 +22,7 @@ export async function PATCH(req: Request, { params }: Params) {
     }
 
     // Prevent self-ban
-    if (params.id === session.user.id && action === 'ban') {
+    if (id === session.user.id && action === 'ban') {
       return NextResponse.json({ error: 'Cannot ban yourself' }, { status: 400 })
     }
 
@@ -34,7 +35,7 @@ export async function PATCH(req: Request, { params }: Params) {
     else if (action === 'demote') updateData.role = 'CUSTOMER'
 
     const user = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: id },
       data: updateData,
       select: { id: true, name: true, email: true, role: true, isBanned: true },
     })

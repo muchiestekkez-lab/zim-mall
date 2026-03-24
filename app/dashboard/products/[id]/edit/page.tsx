@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import ProductForm from '@/components/products/ProductForm'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export const metadata = { title: 'Edit Product' }
@@ -20,7 +20,7 @@ export default async function EditProductPage({ params }: PageProps) {
   if (!store) redirect('/dashboard/store')
 
   const product = await prisma.product.findFirst({
-    where: { id: params.id, storeId: store.id },
+    where: { id: (await params).id, storeId: store.id },
   })
 
   if (!product) notFound()

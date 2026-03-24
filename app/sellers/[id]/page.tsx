@@ -7,7 +7,7 @@ import ProductGrid from '@/components/products/ProductGrid'
 import { Badge, VerifiedBadge, PlanBadge } from '@/components/ui/Badge'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 async function getStore(id: string) {
@@ -36,7 +36,7 @@ async function getStore(id: string) {
 }
 
 export default async function SellerPage({ params }: PageProps) {
-  const store = await getStore(params.id)
+  const store = await getStore((await params).id)
   if (!store) return notFound()
 
   const avgRating =

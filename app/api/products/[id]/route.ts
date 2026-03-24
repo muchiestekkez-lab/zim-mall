@@ -6,13 +6,14 @@ import { moderateProductListing } from '@/lib/moderation'
 import { generateUniqueSlug } from '@/lib/utils'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const product = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         store: {
           include: {
@@ -38,7 +39,7 @@ export async function GET(req: Request, { params }: Params) {
 
     // Increment views
     await prisma.product.update({
-      where: { id: params.id },
+      where: { id: id },
       data: { views: { increment: 1 } },
     })
 
@@ -66,7 +67,8 @@ export async function GET(req: Request, { params }: Params) {
   }
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const session = await auth()
     if (!session) {
@@ -92,7 +94,7 @@ export async function PUT(req: Request, { params }: Params) {
     }
 
     const existing = await prisma.product.findFirst({
-      where: { id: params.id, storeId: store.id },
+      where: { id: id, storeId: store.id },
     })
 
     if (!existing && session.user.role !== 'ADMIN') {
@@ -114,7 +116,7 @@ export async function PUT(req: Request, { params }: Params) {
     }
 
     const product = await prisma.product.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...parsed.data,
         slug: generateUniqueSlug(parsed.data.name),
@@ -128,7 +130,8 @@ export async function PUT(req: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(req: Request, { params }: Params) {
+export async function DELETE(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const session = await auth()
     if (!session) {
@@ -141,7 +144,7 @@ export async function DELETE(req: Request, { params }: Params) {
 
     const product = await prisma.product.findFirst({
       where: {
-        id: params.id,
+        id: id,
         ...(session.user.role !== 'ADMIN' && store ? { storeId: store.id } : {}),
       },
     })
@@ -150,7 +153,7 @@ export async function DELETE(req: Request, { params }: Params) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    await prisma.product.delete({ where: { id: params.id } })
+    await prisma.product.delete({ where: { id: id } })
 
     return NextResponse.json({ success: true })
   } catch (error) {

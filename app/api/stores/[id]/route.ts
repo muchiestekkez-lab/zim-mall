@@ -4,13 +4,14 @@ import { prisma } from '@/lib/prisma'
 import { storeSchema } from '@/lib/validations'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const store = await prisma.store.findFirst({
-      where: { OR: [{ id: params.id }, { slug: params.id }] },
+      where: { OR: [{ id: id }, { slug: id }] },
       include: {
         subscription: true,
         _count: { select: { products: true, reviews: true } },
@@ -28,7 +29,8 @@ export async function GET(req: Request, { params }: Params) {
   }
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const session = await auth()
     if (!session) {
@@ -45,14 +47,14 @@ export async function PUT(req: Request, { params }: Params) {
       )
     }
 
-    const store = await prisma.store.findUnique({ where: { id: params.id } })
+    const store = await prisma.store.findUnique({ where: { id: id } })
 
     if (!store || (store.sellerId !== session.user.id && session.user.role !== 'ADMIN')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
     const updated = await prisma.store.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         name: parsed.data.name,
         description: parsed.data.description,

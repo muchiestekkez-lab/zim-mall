@@ -3,10 +3,11 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export async function PATCH(req: Request, { params }: Params) {
+export async function PATCH(req: Request, context: Params) {
+  const { id } = await context.params
   try {
     const session = await auth()
     if (!session || session.user.role !== 'ADMIN') {
@@ -26,7 +27,7 @@ export async function PATCH(req: Request, { params }: Params) {
     }
 
     const report = await prisma.report.update({
-      where: { id: params.id },
+      where: { id: id },
       data: { status: statusMap[action] },
     })
 
