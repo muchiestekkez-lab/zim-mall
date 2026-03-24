@@ -22,6 +22,7 @@ export default function BecomeSellerForm({ userEmail, userName }: Props) {
   const [phone, setPhone] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [promoWon, setPromoWon] = useState<{ number: number; message: string } | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,6 +43,11 @@ export default function BecomeSellerForm({ userEmail, userName }: Props) {
         return
       }
 
+      if (data.freePromo) {
+        setPromoWon({ number: data.promoNumber, message: data.message })
+        return
+      }
+
       // Hard redirect so session gets refreshed with new SELLER role
       window.location.href = '/dashboard/subscription'
     } catch {
@@ -49,6 +55,32 @@ export default function BecomeSellerForm({ userEmail, userName }: Props) {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (promoWon) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="h-10 w-10 text-green-500" />
+          </div>
+          <div className="inline-block bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+            #{promoWon.number} of 50 Early Sellers
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">Thank You for Joining ZIM MALL!</h1>
+          <p className="text-gray-600 mb-2">{promoWon.message}</p>
+          <p className="text-sm text-gray-500 mb-8">
+            Your store is active and your FREE 1-month Starter subscription has been applied. Start listing your products now!
+          </p>
+          <button
+            onClick={() => { window.location.href = '/dashboard' }}
+            className="w-full px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg transition-colors"
+          >
+            Go to My Dashboard
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

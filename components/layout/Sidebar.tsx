@@ -7,40 +7,17 @@ import {
   Package,
   Store,
   CreditCard,
-  BarChart2,
   Plus,
+  Lock,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const navItems = [
-  {
-    label: 'Overview',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-    exact: true,
-  },
-  {
-    label: 'My Store',
-    href: '/dashboard/store',
-    icon: Store,
-  },
-  {
-    label: 'Products',
-    href: '/dashboard/products',
-    icon: Package,
-  },
-  {
-    label: 'Subscription',
-    href: '/dashboard/subscription',
-    icon: CreditCard,
-  },
-]
-
 interface SidebarProps {
   storeName?: string
+  hasActiveSubscription?: boolean
 }
 
-export default function Sidebar({ storeName }: SidebarProps) {
+export default function Sidebar({ storeName, hasActiveSubscription = false }: SidebarProps) {
   const pathname = usePathname()
 
   const isActive = (href: string, exact?: boolean) => {
@@ -48,14 +25,19 @@ export default function Sidebar({ storeName }: SidebarProps) {
     return pathname.startsWith(href)
   }
 
+  const navItems = [
+    { label: 'Overview', href: '/dashboard', icon: LayoutDashboard, exact: true, requiresSub: true },
+    { label: 'My Store', href: '/dashboard/store', icon: Store, requiresSub: true },
+    { label: 'Products', href: '/dashboard/products', icon: Package, requiresSub: true },
+    { label: 'Subscription', href: '/dashboard/subscription', icon: CreditCard, requiresSub: false },
+  ]
+
   return (
     <aside className="w-64 flex-shrink-0 hidden lg:block">
       <div className="sticky top-20">
         {storeName && (
           <div className="px-4 py-3 mb-4 bg-brand-50 rounded-lg border border-brand-100">
-            <p className="text-xs text-brand-600 font-medium uppercase tracking-wide">
-              Your Store
-            </p>
+            <p className="text-xs text-brand-600 font-medium uppercase tracking-wide">Your Store</p>
             <p className="font-semibold text-gray-900 mt-0.5 truncate">{storeName}</p>
           </div>
         )}
@@ -64,6 +46,24 @@ export default function Sidebar({ storeName }: SidebarProps) {
           {navItems.map((item) => {
             const Icon = item.icon
             const active = isActive(item.href, item.exact)
+            const locked = item.requiresSub && !hasActiveSubscription
+
+            if (locked) {
+              return (
+                <Link
+                  key={item.href}
+                  href="/dashboard/subscription"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 bg-gray-50 border border-dashed border-gray-200 cursor-not-allowed"
+                  title="Subscribe to unlock"
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className="h-4 w-4 text-gray-300" />
+                    {item.label}
+                  </div>
+                  <Lock className="h-3.5 w-3.5 text-gray-300" />
+                </Link>
+              )
+            }
 
             return (
               <Link
@@ -83,15 +83,17 @@ export default function Sidebar({ storeName }: SidebarProps) {
           })}
         </nav>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <Link
-            href="/dashboard/products/new"
-            className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            <Plus className="h-4 w-4" />
-            Add Product
-          </Link>
-        </div>
+        {hasActiveSubscription && (
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <Link
+              href="/dashboard/products/new"
+              className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              Add Product
+            </Link>
+          </div>
+        )}
       </div>
     </aside>
   )
