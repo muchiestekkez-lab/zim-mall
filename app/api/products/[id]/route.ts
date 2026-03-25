@@ -4,44 +4,57 @@ import { prisma } from '@/lib/prisma'
 import { productSchema } from '@/lib/validations'
 import { moderateProductListing } from '@/lib/moderation'
 import { generateUniqueSlug } from '@/lib/utils'
+import { cookies } from 'next/headers'
 
 interface Params {
   params: Promise<{ id: string }>
 }
 
-export async function GET(req: Request, context: Params) {
+export async function GET(_req: Request, context: Params) {
   const { id } = await context.params
   try {
-    const product = await prisma.product.findUnique({
-      where: { id: id },
-      include: {
-        store: {
-          include: {
-            subscription: { select: { plan: true, status: true } },
-            reviews: { select: { rating: true } },
-            _count: { select: { products: true, reviews: true } },
+    const [product, session] = await Promise.all([
+      prisma.product.findUnique({
+        where: { id: id },
+        include: {
+          store: {
+            include: {
+              subscription: { select: { plan: true, status: true } },
+              reviews: { select: { rating: true } },
+              _count: { select: { products: true, reviews: true } },
+            },
           },
-        },
-        reviews: {
-          include: {
-            user: { select: { name: true, image: true } },
+          reviews: {
+            include: {
+              user: { select: { name: true, image: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 20,
           },
-          orderBy: { createdAt: 'desc' },
-          take: 20,
+          _count: { select: { reviews: true } },
         },
-        _count: { select: { reviews: true } },
-      },
-    })
+      }),
+      auth(),
+    ])
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Increment views
-    await prisma.product.update({
-      where: { id: id },
-      data: { views: { increment: 1 } },
-    })
+    // Only count views from real visitors:
+    // - Skip if the viewer is the seller who owns this product
+    // - Skip if the same visitor already viewed this product in the last hour (cookie)
+    const isOwner = session?.user?.id && product.store.sellerId === session.user.id
+    const cookieStore = await cookies()
+    const viewedKey = `viewed_${id}`
+    const alreadyViewed = cookieStore.get(viewedKey)
+
+    if (!isOwner && !alreadyViewed) {
+      await prisma.product.update({
+        where: { id: id },
+        data: { views: { increment: 1 } },
+      })
+    }
 
     // Get similar products
     const similar = await prisma.product.findMany({
@@ -60,7 +73,18 @@ export async function GET(req: Request, context: Params) {
       take: 4,
     })
 
-    return NextResponse.json({ product, similar })
+    const response = NextResponse.json({ product, similar })
+
+    // Set a 1-hour cookie so repeated visits don't count
+    if (!isOwner && !alreadyViewed) {
+      response.cookies.set(`viewed_${id}`, '1', {
+        maxAge: 60 * 60, // 1 hour
+        httpOnly: true,
+        sameSite: 'lax',
+      })
+    }
+
+    return response
   } catch (error) {
     console.error('Product GET error:', error)
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
@@ -130,7 +154,7 @@ export async function PUT(req: Request, context: Params) {
   }
 }
 
-export async function DELETE(req: Request, context: Params) {
+export async function DELETE(_req: Request, context: Params) {
   const { id } = await context.params
   try {
     const session = await auth()
