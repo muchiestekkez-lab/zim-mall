@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // NextAuth v5 renamed the cookie
+  // NextAuth v5 renamed the session cookie
   const secureCookie = req.nextUrl.protocol === 'https:'
   const cookieName = secureCookie
     ? '__Secure-authjs.session-token'
@@ -34,10 +34,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Pass pathname to server components via request header
-  const requestHeaders = new Headers(req.headers)
-  requestHeaders.set('x-pathname', pathname)
-  return NextResponse.next({ request: { headers: requestHeaders } })
+  return NextResponse.next()
 }
 
 export const config = {

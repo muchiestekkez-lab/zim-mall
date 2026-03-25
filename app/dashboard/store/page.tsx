@@ -38,6 +38,14 @@ export default function StoreSettingsPage() {
         const res = await fetch('/api/stores/me')
         if (res.ok) {
           const data = await res.json()
+          // Gate: redirect if no active subscription
+          const sub = data.store?.subscription
+          const hasActiveSub = sub?.status === 'ACTIVE' &&
+            (!sub.endDate || new Date(sub.endDate) > new Date())
+          if (data.store && !hasActiveSub) {
+            router.replace('/dashboard/subscription')
+            return
+          }
           setStore(data.store)
           setLogo(data.store?.logo || null)
           setBanner(data.store?.banner || null)
@@ -56,7 +64,7 @@ export default function StoreSettingsPage() {
       }
     }
     fetchStore()
-  }, [reset])
+  }, [reset, router])
 
   const handleImageUpload = async (
     file: File,

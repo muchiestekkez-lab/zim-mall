@@ -16,7 +16,12 @@ export default async function ProductsPage() {
 
   const store = await prisma.store.findUnique({
     where: { sellerId: session.user.id },
+    include: { subscription: true },
   })
+
+  const hasActiveSub = store?.subscription?.status === 'ACTIVE' &&
+    (!store.subscription.endDate || new Date(store.subscription.endDate) > new Date())
+  if (store && !hasActiveSub) redirect('/dashboard/subscription')
 
   if (!store) {
     redirect('/dashboard/store')

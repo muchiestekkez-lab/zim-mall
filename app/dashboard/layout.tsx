@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Sidebar from '@/components/layout/Sidebar'
@@ -27,15 +26,6 @@ export default async function DashboardLayout({
     store?.subscription?.status === 'ACTIVE' &&
     (!store.subscription.endDate || new Date(store.subscription.endDate) > new Date())
 
-  // Block access to all dashboard pages except /subscription for unsubscribed sellers
-  if (store && !hasActiveSubscription) {
-    const headersList = await headers()
-    const pathname = headersList.get('x-pathname') || ''
-    if (!pathname.startsWith('/dashboard/subscription')) {
-      redirect('/dashboard/subscription')
-    }
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Mobile nav */}
@@ -52,11 +42,11 @@ export default async function DashboardLayout({
               href={item.locked ? '/dashboard/subscription' : item.href}
               className={`flex-shrink-0 px-4 py-2 text-sm font-medium border rounded-lg ${
                 item.locked
-                  ? 'border-gray-200 text-gray-400 bg-gray-50 cursor-not-allowed'
+                  ? 'border-gray-200 text-gray-400 bg-gray-50'
                   : 'border-gray-200 hover:bg-gray-50 text-gray-700'
               }`}
             >
-              {item.locked ? '🔒 ' : ''}{item.label}
+              {item.label}
             </a>
           ))}
         </div>
