@@ -107,6 +107,7 @@ export const CATEGORIES = [
   { name: 'Agriculture', slug: 'agriculture', icon: 'leaf' },
   { name: 'Property & Real Estate', slug: 'property-real-estate', icon: 'building' },
   { name: 'Baby & Kids', slug: 'baby-kids', icon: 'baby' },
+  { name: 'Home Ware', slug: 'home-ware', icon: 'sofa' },
 ] as const
 
 export const ZIMBABWE_LOCATIONS = [

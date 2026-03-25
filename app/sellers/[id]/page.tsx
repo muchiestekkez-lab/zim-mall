@@ -60,8 +60,9 @@ export default async function SellerPage({ params }: PageProps) {
         </div>
 
         <div className="px-6 pb-6">
-          <div className="flex items-end gap-4 -mt-10 mb-4">
-            <div className="w-20 h-20 rounded-xl overflow-hidden border-4 border-white shadow-md bg-white flex-shrink-0">
+          {/* Logo overlaps banner */}
+          <div className="-mt-10 mb-3">
+            <div className="w-20 h-20 rounded-xl overflow-hidden border-4 border-white shadow-md bg-white">
               {store.logo ? (
                 <Image src={store.logo} alt={store.name} width={80} height={80} className="object-cover" />
               ) : (
@@ -70,38 +71,39 @@ export default async function SellerPage({ params }: PageProps) {
                 </div>
               )}
             </div>
+          </div>
 
-            <div className="pt-6 flex-1 min-w-0">
-              <div className="flex items-center flex-wrap gap-2">
-                <h1 className="text-xl font-bold text-gray-900">{store.name}</h1>
-                {store.isVerified && <VerifiedBadge />}
-                {store.subscription && hasActiveSubscription && (
-                  <PlanBadge plan={store.subscription.plan} />
-                )}
-              </div>
+          {/* Store name and meta — always below banner */}
+          <div className="mb-4">
+            <div className="flex items-center flex-wrap gap-2">
+              <h1 className="text-xl font-bold text-gray-900">{store.name}</h1>
+              {store.isVerified && <VerifiedBadge />}
+              {store.subscription && hasActiveSubscription && (
+                <PlanBadge plan={store.subscription.plan} />
+              )}
+            </div>
 
-              <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 flex-wrap">
-                {store.location && (
-                  <span className="flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {store.location}
-                  </span>
-                )}
-                {avgRating !== null && (
-                  <span className="flex items-center gap-1">
-                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                    {avgRating.toFixed(1)} ({store._count.reviews} reviews)
-                  </span>
-                )}
+            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 flex-wrap">
+              {store.location && (
                 <span className="flex items-center gap-1">
-                  <Package className="h-3.5 w-3.5" />
-                  {store._count.products} products
+                  <MapPin className="h-3.5 w-3.5" />
+                  {store.location}
                 </span>
+              )}
+              {avgRating !== null && (
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5" />
-                  Member since {new Date(store.createdAt).getFullYear()}
+                  <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                  {avgRating.toFixed(1)} ({store._count.reviews} reviews)
                 </span>
-              </div>
+              )}
+              <span className="flex items-center gap-1">
+                <Package className="h-3.5 w-3.5" />
+                {store._count.products} products
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3.5 w-3.5" />
+                Member since {new Date(store.createdAt).getFullYear()}
+              </span>
             </div>
           </div>
 

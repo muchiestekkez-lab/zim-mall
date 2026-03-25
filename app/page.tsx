@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Search, ArrowRight, Store, Package, ShieldCheck, Monitor, Shirt, Home, Car, Briefcase, Leaf, Heart, BookOpen } from 'lucide-react'
+import { Search, ArrowRight, Store, Package, ShieldCheck, Monitor, Shirt, Home, Car, Briefcase, Leaf, Heart, BookOpen, Sofa } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import ProductGrid from '@/components/products/ProductGrid'
 
@@ -50,6 +50,7 @@ const categories = [
   { name: 'Agriculture', slug: 'agriculture', icon: Leaf, color: 'bg-emerald-50 text-emerald-600' },
   { name: 'Health & Beauty', slug: 'health-beauty', icon: Heart, color: 'bg-rose-50 text-rose-600' },
   { name: 'Books & Education', slug: 'books-education', icon: BookOpen, color: 'bg-yellow-50 text-yellow-600' },
+  { name: 'Home Ware', slug: 'home-ware', icon: Sofa, color: 'bg-amber-50 text-amber-600' },
 ]
 
 export default async function HomePage() {
