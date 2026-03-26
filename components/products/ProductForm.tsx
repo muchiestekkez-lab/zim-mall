@@ -276,9 +276,9 @@ export function ProductForm({ initialData, storeId }: ProductFormProps) {
         <Select
           label="Delivery Type"
           options={[
-            { value: 'BOTH', label: 'Delivery & Pickup' },
-            { value: 'DELIVERY', label: 'Delivery Only' },
-            { value: 'PICKUP', label: 'Pickup Only' },
+            { value: 'BOTH', label: 'Pick Up & Delivery for a Fee' },
+            { value: 'DELIVERY', label: 'Delivery for a Fee' },
+            { value: 'PICKUP', label: 'Pick Up Only' },
           ]}
           error={errors.deliveryType?.message}
           required

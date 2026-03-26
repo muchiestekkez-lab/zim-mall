@@ -280,9 +280,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
               >
                 <option value="">Any</option>
-                <option value="DELIVERY">Delivery available</option>
-                <option value="PICKUP">Pickup only</option>
-                <option value="BOTH">Delivery &amp; pickup</option>
+                <option value="DELIVERY">Delivery for a Fee</option>
+                <option value="PICKUP">Pick Up Only</option>
+                <option value="BOTH">Pick Up &amp; Delivery for a Fee</option>
               </select>
             </div>
 

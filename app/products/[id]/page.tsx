@@ -201,11 +201,11 @@ export default function ProductDetailPage() {
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 {product.deliveryType === 'DELIVERY' ? (
-                  <><Truck className="h-4 w-4 text-gray-400" /> Delivery available</>
+                  <><Truck className="h-4 w-4 text-gray-400" /> Delivery for a Fee</>
                 ) : product.deliveryType === 'PICKUP' ? (
-                  <><RotateCcw className="h-4 w-4 text-gray-400" /> Pickup only</>
+                  <><RotateCcw className="h-4 w-4 text-gray-400" /> Pick Up Only</>
                 ) : (
-                  <><Truck className="h-4 w-4 text-gray-400" /> Delivery &amp; pickup</>
+                  <><Truck className="h-4 w-4 text-gray-400" /> Pick Up &amp; Delivery for a Fee</>
                 )}
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">

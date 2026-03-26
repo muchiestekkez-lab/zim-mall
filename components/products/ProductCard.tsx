@@ -118,9 +118,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
           {/* Delivery */}
           <div className="text-xs text-gray-400">
-            {product.deliveryType === 'DELIVERY' && 'Delivery available'}
-            {product.deliveryType === 'PICKUP' && 'Pickup only'}
-            {product.deliveryType === 'BOTH' && 'Delivery & pickup'}
+            {product.deliveryType === 'DELIVERY' && 'Delivery for a Fee'}
+            {product.deliveryType === 'PICKUP' && 'Pick Up Only'}
+            {product.deliveryType === 'BOTH' && 'Pick Up & Delivery for a Fee'}
           </div>
         </div>
       </div>
