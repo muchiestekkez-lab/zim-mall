@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
@@ -9,12 +9,12 @@ import {
   Menu,
   X,
   ShoppingBag,
-  User,
   ChevronDown,
   Store,
   LayoutDashboard,
   LogOut,
   Shield,
+  Download,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Session } from 'next-auth'
@@ -27,7 +27,29 @@ export default function Navbar({ session }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [installPrompt, setInstallPrompt] = useState<any>(null)
+  const [installed, setInstalled] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault()
+      setInstallPrompt(e)
+    }
+    window.addEventListener('beforeinstallprompt', handler)
+    window.addEventListener('appinstalled', () => setInstalled(true))
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  const handleInstall = async () => {
+    if (!installPrompt) return
+    installPrompt.prompt()
+    const { outcome } = await installPrompt.userChoice
+    if (outcome === 'accepted') {
+      setInstallPrompt(null)
+      setInstalled(true)
+    }
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,6 +105,15 @@ export default function Navbar({ session }: NavbarProps) {
             >
               Popular
             </Link>
+            {installPrompt && !installed && (
+              <button
+                onClick={handleInstall}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                Download App
+              </button>
+            )}
           </nav>
 
           {/* Auth / User */}
@@ -211,6 +242,19 @@ export default function Navbar({ session }: NavbarProps) {
             <Link href="/search?sort=popular" className="flex items-center gap-2 px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-lg" onClick={() => setMobileOpen(false)}>
               Popular Items
             </Link>
+
+            {installPrompt && !installed && (
+              <>
+                <button
+                  onClick={handleInstall}
+                  className="flex items-center gap-2 w-full px-3 py-3 text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg"
+                >
+                  <Download className="h-4 w-4" />
+                  Download App — Install on Your Phone
+                </button>
+                <hr className="my-2 border-gray-200" />
+              </>
+            )}
 
             {session ? (
               <>
