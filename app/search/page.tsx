@@ -22,7 +22,7 @@ interface SearchPageProps {
 
 const PAGE_SIZE = 24
 
-async function searchProducts(params: SearchPageProps['searchParams']) {
+async function searchProducts(params: SearchParams) {
   const {
     q,
     category,
