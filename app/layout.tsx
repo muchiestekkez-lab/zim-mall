@@ -15,6 +15,7 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  themeColor: '#2D9B6F',
 }
 
 export const metadata: Metadata = {
@@ -25,6 +26,16 @@ export const metadata: Metadata = {
   description:
     'Buy and sell anything in Zimbabwe. Connect with local sellers, find great deals on electronics, clothing, vehicles, services and more.',
   keywords: ['Zimbabwe', 'marketplace', 'buy', 'sell', 'online shopping', 'Harare', 'Bulawayo'],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ZIM MALL',
+  },
+  icons: {
+    icon: '/icons/icon-512.png',
+    apple: '/icons/icon-192.png',
+  },
   openGraph: {
     title: 'ZIM MALL — Zimbabwe\'s Premier Online Marketplace',
     description: 'Buy and sell anything in Zimbabwe.',
