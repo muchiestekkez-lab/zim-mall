@@ -4,18 +4,20 @@ import ProductGrid, { ProductGridSkeleton } from '@/components/products/ProductG
 import { CATEGORIES, ZIMBABWE_LOCATIONS } from '@/lib/utils'
 import { SlidersHorizontal, Search } from 'lucide-react'
 
+interface SearchParams {
+  q?: string
+  category?: string
+  minPrice?: string
+  maxPrice?: string
+  location?: string
+  deliveryType?: string
+  condition?: string
+  sort?: string
+  page?: string
+}
+
 interface SearchPageProps {
-  searchParams: {
-    q?: string
-    category?: string
-    minPrice?: string
-    maxPrice?: string
-    location?: string
-    deliveryType?: string
-    condition?: string
-    sort?: string
-    page?: string
-  }
+  searchParams: Promise<SearchParams>
 }
 
 const PAGE_SIZE = 24
@@ -89,7 +91,7 @@ async function searchProducts(params: SearchPageProps['searchParams']) {
   return { products, total, pages: Math.ceil(total / PAGE_SIZE) }
 }
 
-async function SearchResults({ searchParams }: SearchPageProps) {
+async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   const { products, total, pages } = await searchProducts(searchParams)
   const currentPage = parseInt(searchParams.page || '1')
 
@@ -151,17 +153,18 @@ async function SearchResults({ searchParams }: SearchPageProps) {
   )
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const currentCategory = CATEGORIES.find((c) => c.slug === searchParams.category)
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const params = await searchParams
+  const currentCategory = CATEGORIES.find((c) => c.slug === params.category)
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center gap-3 mb-6">
-        {searchParams.q ? (
+        {params.q ? (
           <div className="flex items-center gap-2">
             <Search className="h-5 w-5 text-gray-400" />
             <h1 className="text-xl font-bold text-gray-900">
-              Search: &ldquo;{searchParams.q}&rdquo;
+              Search: &ldquo;{params.q}&rdquo;
             </h1>
           </div>
         ) : currentCategory ? (
@@ -175,8 +178,8 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         {/* Filters Sidebar */}
         <aside className="w-56 flex-shrink-0 hidden md:block">
           <form method="GET" action="/search" className="space-y-5">
-            {searchParams.q && (
-              <input type="hidden" name="q" value={searchParams.q} />
+            {params.q && (
+              <input type="hidden" name="q" value={params.q} />
             )}
 
             <div>
@@ -193,7 +196,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
               </label>
               <select
                 name="category"
-                defaultValue={searchParams.category || ''}
+                defaultValue={params.category || ''}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               >
                 <option value="">All categories</option>
@@ -212,7 +215,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
               </label>
               <select
                 name="location"
-                defaultValue={searchParams.location || ''}
+                defaultValue={params.location || ''}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               >
                 <option value="">All locations</option>
@@ -234,7 +237,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
                   type="number"
                   name="minPrice"
                   placeholder="Min"
-                  defaultValue={searchParams.minPrice || ''}
+                  defaultValue={params.minPrice || ''}
                   min="0"
                   className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
                 />
@@ -243,7 +246,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
                   type="number"
                   name="maxPrice"
                   placeholder="Max"
-                  defaultValue={searchParams.maxPrice || ''}
+                  defaultValue={params.maxPrice || ''}
                   min="0"
                   className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
                 />
@@ -257,7 +260,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
               </label>
               <select
                 name="condition"
-                defaultValue={searchParams.condition || ''}
+                defaultValue={params.condition || ''}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
               >
                 <option value="">Any</option>
@@ -273,7 +276,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
               </label>
               <select
                 name="deliveryType"
-                defaultValue={searchParams.deliveryType || ''}
+                defaultValue={params.deliveryType || ''}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
               >
                 <option value="">Any</option>
@@ -290,7 +293,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
               </label>
               <select
                 name="sort"
-                defaultValue={searchParams.sort || 'newest'}
+                defaultValue={params.sort || 'newest'}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
               >
                 <option value="newest">Newest first</option>
@@ -319,7 +322,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         {/* Results */}
         <div className="flex-1 min-w-0">
           <Suspense fallback={<ProductGridSkeleton count={PAGE_SIZE} />}>
-            <SearchResults searchParams={searchParams} />
+            <SearchResults searchParams={params} />
           </Suspense>
         </div>
       </div>
