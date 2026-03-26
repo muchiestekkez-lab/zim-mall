@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Search, ArrowRight, Store, Package, ShieldCheck, Monitor, Shirt, Home, Car, Briefcase, Leaf, Heart, BookOpen, Sofa } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import ProductGrid from '@/components/products/ProductGrid'
+import InstallBanner from '@/components/ui/InstallBanner'
 
 async function getFeaturedProducts() {
   try {
@@ -61,6 +62,9 @@ export default async function HomePage() {
 
   return (
     <div>
+      {/* App Install Banner */}
+      <InstallBanner />
+
       {/* Hero */}
       <section className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
