@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { AlertCircle } from 'lucide-react'
 import PricingCard from '@/components/subscription/PricingCard'
@@ -22,7 +22,7 @@ interface SubscriptionData {
   } | null
 }
 
-export default function SubscriptionPage() {
+function SubscriptionContent() {
   const searchParams = useSearchParams()
   const [data, setData] = useState<SubscriptionData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -140,5 +140,13 @@ export default function SubscriptionPage() {
         )}
       </Modal>
     </div>
+  )
+}
+
+export default function SubscriptionPage() {
+  return (
+    <Suspense>
+      <SubscriptionContent />
+    </Suspense>
   )
 }
