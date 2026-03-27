@@ -3,6 +3,7 @@ import { Search, ArrowRight, Store, Package, ShieldCheck, Monitor, Shirt, Home, 
 import { prisma } from '@/lib/prisma'
 import ProductGrid from '@/components/products/ProductGrid'
 import InstallBanner from '@/components/ui/InstallBanner'
+import DownloadButton from '@/components/ui/DownloadButton'
 
 async function getFeaturedProducts() {
   try {
@@ -97,13 +98,22 @@ export default async function HomePage() {
               </button>
             </form>
 
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 mb-6">
               <span>
                 <span className="font-semibold text-gray-900">{stats.products.toLocaleString()}</span> products listed
               </span>
               <span>
                 <span className="font-semibold text-gray-900">{stats.stores.toLocaleString()}</span> verified sellers
               </span>
+            </div>
+
+            {/* Download App — visible to everyone */}
+            <div className="inline-flex items-center gap-3 bg-brand-600 rounded-xl px-5 py-4">
+              <div>
+                <p className="text-white font-bold text-sm">Get the ZIM MALL App</p>
+                <p className="text-brand-200 text-xs">No App Store needed — install directly</p>
+              </div>
+              <DownloadButton />
             </div>
           </div>
         </div>
