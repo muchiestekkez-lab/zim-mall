@@ -361,12 +361,15 @@ export default function Navbar({ session }: NavbarProps) {
       {showGuide && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0">
           <div className="bg-white rounded-2xl w-full max-w-sm p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-gray-900 text-lg">Install ZIM MALL</h3>
               <button onClick={() => setShowGuide(false)} className="p-1 text-gray-400 hover:text-gray-600">
                 <X className="h-5 w-5" />
               </button>
             </div>
+            <p className="text-sm text-gray-500 mb-4">
+              Do these steps <span className="font-semibold text-gray-800">right now in your browser</span>, then ZIM MALL will be saved on your home screen:
+            </p>
             <div className="space-y-4">
               {guideSteps.map(({ step, title, desc }) => (
                 <div key={step} className="flex items-start gap-3">
@@ -380,11 +383,14 @@ export default function Navbar({ session }: NavbarProps) {
                 </div>
               ))}
             </div>
+            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-800">
+              After step 3, ZIM MALL will appear on your home screen like a normal app.
+            </div>
             <button
               onClick={() => setShowGuide(false)}
-              className="mt-6 w-full py-3 bg-brand-500 text-white font-semibold rounded-xl"
+              className="mt-4 w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl"
             >
-              Got it!
+              Close
             </button>
           </div>
         </div>

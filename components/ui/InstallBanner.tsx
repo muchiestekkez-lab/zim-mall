@@ -100,12 +100,15 @@ export default function InstallBanner() {
         {showIOSGuide && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0">
             <div className="bg-white rounded-2xl w-full max-w-sm p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-2">
                 <h3 className="font-bold text-gray-900 text-lg">Install ZIM MALL</h3>
                 <button onClick={() => setShowIOSGuide(false)} className="p-1 text-gray-400 hover:text-gray-600">
                   <X className="h-5 w-5" />
                 </button>
               </div>
+              <p className="text-sm text-gray-500 mb-4">
+                Do these steps <span className="font-semibold text-gray-800">right now in your browser</span>:
+              </p>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="w-7 h-7 bg-brand-500 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
@@ -129,11 +132,14 @@ export default function InstallBanner() {
                   </div>
                 </div>
               </div>
+              <div className="mt-4 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-800">
+                After step 3, ZIM MALL will appear on your home screen like a normal app.
+              </div>
               <button
                 onClick={() => setShowIOSGuide(false)}
-                className="mt-6 w-full py-3 bg-brand-500 text-white font-semibold rounded-xl"
+                className="mt-4 w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl"
               >
-                Got it!
+                Close
               </button>
             </div>
           </div>
@@ -209,40 +215,46 @@ export default function InstallBanner() {
       {showAndroidGuide && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0">
           <div className="bg-white rounded-2xl w-full max-w-sm p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-gray-900 text-lg">Install ZIM MALL</h3>
               <button onClick={() => setShowAndroidGuide(false)} className="p-1 text-gray-400 hover:text-gray-600">
                 <X className="h-5 w-5" />
               </button>
             </div>
+            <p className="text-sm text-gray-500 mb-4">
+              Do these steps <span className="font-semibold text-gray-800">right now in your browser</span>:
+            </p>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-7 h-7 bg-brand-500 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
                 <div>
-                  <p className="font-medium text-gray-900 text-sm">Open this link in Chrome</p>
-                  <p className="text-gray-500 text-xs mt-0.5">If you are not already in Chrome, copy the link and open it there</p>
+                  <p className="font-medium text-gray-900 text-sm">Tap the 3 dots menu <span className="font-bold">⋮</span> at the top right of your browser</p>
+                  <p className="text-gray-500 text-xs mt-0.5">This opens the browser menu</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-7 h-7 bg-brand-500 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
                 <div>
-                  <p className="font-medium text-gray-900 text-sm">Tap the 3 dots menu <span className="font-bold">⋮</span> at the top right</p>
-                  <p className="text-gray-500 text-xs mt-0.5">This opens the Chrome browser menu</p>
+                  <p className="font-medium text-gray-900 text-sm">Tap <span className="font-bold">"Add to Home screen"</span> or <span className="font-bold">"Install app"</span></p>
+                  <p className="text-gray-500 text-xs mt-0.5">The exact wording depends on your browser</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-7 h-7 bg-brand-500 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">3</div>
                 <div>
-                  <p className="font-medium text-gray-900 text-sm">Tap <span className="font-bold">"Add to Home screen"</span></p>
+                  <p className="font-medium text-gray-900 text-sm">Tap <span className="font-bold">"Add"</span> to confirm</p>
                   <p className="text-gray-500 text-xs mt-0.5">ZIM MALL will appear on your home screen like an app</p>
                 </div>
               </div>
             </div>
+            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-800">
+              After step 3, ZIM MALL will appear on your home screen like a normal app.
+            </div>
             <button
               onClick={() => setShowAndroidGuide(false)}
-              className="mt-6 w-full py-3 bg-brand-500 text-white font-semibold rounded-xl"
+              className="mt-4 w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl"
             >
-              Got it!
+              Close
             </button>
           </div>
         </div>
