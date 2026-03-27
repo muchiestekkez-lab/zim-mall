@@ -49,7 +49,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
+  let session = null
+  try {
+    session = await auth()
+  } catch {
+    // DB or auth error — render page without session rather than crashing
+  }
 
   return (
     <html lang="en" className={inter.variable}>

@@ -72,13 +72,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       // Refresh role from DB on each request
       if (token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { role: true, isBanned: true },
-        })
-        if (dbUser) {
-          token.role = dbUser.role
-          token.isBanned = dbUser.isBanned
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { role: true, isBanned: true },
+          })
+          if (dbUser) {
+            token.role = dbUser.role
+            token.isBanned = dbUser.isBanned
+          }
+        } catch {
+          // DB error — keep existing token values, don't crash the request
         }
       }
 
