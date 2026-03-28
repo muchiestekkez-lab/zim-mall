@@ -14,10 +14,15 @@ export default async function ProductsPage() {
   const session = await auth()
   if (!session) redirect('/login')
 
-  const store = await prisma.store.findUnique({
-    where: { sellerId: session.user.id },
-    include: { subscription: true },
-  })
+  let store = null
+  try {
+    store = await prisma.store.findUnique({
+      where: { sellerId: session.user.id },
+      include: { subscription: true },
+    })
+  } catch {
+    redirect('/login')
+  }
 
   const hasActiveSub = store?.subscription?.status === 'ACTIVE' &&
     (!store.subscription.endDate || new Date(store.subscription.endDate) > new Date())
@@ -27,14 +32,16 @@ export default async function ProductsPage() {
     redirect('/dashboard/store')
   }
 
-  const products = await prisma.product.findMany({
-    where: { storeId: store.id },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  const subscription = await prisma.subscription.findUnique({
-    where: { storeId: store.id },
-  })
+  let products: any[] = []
+  let subscription = null
+  try {
+    ;[products, subscription] = await Promise.all([
+      prisma.product.findMany({ where: { storeId: store.id }, orderBy: { createdAt: 'desc' } }),
+      prisma.subscription.findUnique({ where: { storeId: store.id } }),
+    ])
+  } catch {
+    // DB error — show empty state rather than crashing
+  }
 
   const maxProducts =
     subscription?.plan === 'PREMIUM'

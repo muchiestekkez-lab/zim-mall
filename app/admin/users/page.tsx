@@ -5,13 +5,18 @@ import AdminUserActions from './AdminUserActions'
 export const metadata = { title: 'Users — Admin' }
 
 export default async function AdminUsersPage() {
-  const users = await prisma.user.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      store: { select: { name: true, id: true } },
-      _count: { select: { reviews: true } },
-    },
-  })
+  let users: any[] = []
+  try {
+    users = await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        store: { select: { name: true, id: true } },
+        _count: { select: { reviews: true } },
+      },
+    })
+  } catch {
+    // DB error — show empty list rather than crashing
+  }
 
   return (
     <div>

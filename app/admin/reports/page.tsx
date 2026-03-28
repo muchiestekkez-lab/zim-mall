@@ -6,14 +6,19 @@ import AdminReportActions from './AdminReportActions'
 export const metadata = { title: 'Reports — Admin' }
 
 export default async function AdminReportsPage() {
-  const reports = await prisma.report.findMany({
-    orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
-    include: {
-      reporter: { select: { name: true, email: true } },
-      product: { select: { name: true, id: true } },
-    },
-    take: 100,
-  })
+  let reports: any[] = []
+  try {
+    reports = await prisma.report.findMany({
+      orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+      include: {
+        reporter: { select: { name: true, email: true } },
+        product: { select: { name: true, id: true } },
+      },
+      take: 100,
+    })
+  } catch {
+    // DB error — show empty list rather than crashing
+  }
 
   return (
     <div>

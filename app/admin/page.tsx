@@ -6,30 +6,31 @@ import { formatDate } from '@/lib/utils'
 export const metadata = { title: 'Admin Dashboard' }
 
 export default async function AdminDashboardPage() {
-  const [
-    totalUsers,
-    totalProducts,
-    totalStores,
-    pendingReports,
-    activeSubscriptions,
-    recentUsers,
-  ] = await Promise.all([
-    prisma.user.count(),
-    prisma.product.count(),
-    prisma.store.count(),
-    prisma.report.count({ where: { status: 'PENDING' } }),
-    prisma.subscription.count({ where: { status: 'ACTIVE' } }),
-    prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
-    }),
-  ])
+  let totalUsers = 0, totalProducts = 0, totalStores = 0, pendingReports = 0, activeSubscriptions = 0
+  let recentUsers: any[] = []
+  let revenue: { _sum: { amount: number | null } } = { _sum: { amount: 0 } }
 
-  const revenue = await prisma.subscription.aggregate({
-    where: { status: 'ACTIVE' },
-    _sum: { amount: true },
-  })
+  try {
+    ;[totalUsers, totalProducts, totalStores, pendingReports, activeSubscriptions, recentUsers] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.product.count(),
+        prisma.store.count(),
+        prisma.report.count({ where: { status: 'PENDING' } }),
+        prisma.subscription.count({ where: { status: 'ACTIVE' } }),
+        prisma.user.findMany({
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          select: { id: true, name: true, email: true, role: true, createdAt: true },
+        }),
+      ])
+    revenue = await prisma.subscription.aggregate({
+      where: { status: 'ACTIVE' },
+      _sum: { amount: true },
+    })
+  } catch {
+    // DB error — show zeros rather than crashing
+  }
 
   return (
     <div className="space-y-6">

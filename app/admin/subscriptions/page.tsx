@@ -5,14 +5,19 @@ import { Badge, PlanBadge } from '@/components/ui/Badge'
 export const metadata = { title: 'Subscriptions — Admin' }
 
 export default async function AdminSubscriptionsPage() {
-  const subscriptions = await prisma.subscription.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      store: {
-        include: { seller: { select: { name: true, email: true } } },
+  let subscriptions: any[] = []
+  try {
+    subscriptions = await prisma.subscription.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        store: {
+          include: { seller: { select: { name: true, email: true } } },
+        },
       },
-    },
-  })
+    })
+  } catch {
+    // DB error — show empty list rather than crashing
+  }
 
   const totalRevenue = subscriptions
     .filter((s) => s.status === 'ACTIVE')

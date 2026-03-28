@@ -7,13 +7,16 @@ import AdminProductActions from './AdminProductActions'
 export const metadata = { title: 'Products — Admin' }
 
 export default async function AdminProductsPage() {
-  const products = await prisma.product.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      store: { select: { name: true, id: true } },
-    },
-    take: 100,
-  })
+  let products: any[] = []
+  try {
+    products = await prisma.product.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { store: { select: { name: true, id: true } } },
+      take: 100,
+    })
+  } catch {
+    // DB error — show empty list rather than crashing
+  }
 
   return (
     <div>

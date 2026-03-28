@@ -11,28 +11,32 @@ interface PageProps {
 }
 
 async function getStore(id: string) {
-  return prisma.store.findFirst({
-    where: { OR: [{ id }, { slug: id }], isActive: true },
-    include: {
-      seller: { select: { createdAt: true } },
-      subscription: { select: { plan: true, status: true } },
-      products: {
-        where: { isActive: true, isApproved: true },
-        include: {
-          store: { select: { id: true, name: true, isVerified: true, slug: true } },
-          reviews: { select: { rating: true } },
-          _count: { select: { reviews: true } },
+  try {
+    return await prisma.store.findFirst({
+      where: { OR: [{ id }, { slug: id }], isActive: true },
+      include: {
+        seller: { select: { createdAt: true } },
+        subscription: { select: { plan: true, status: true } },
+        products: {
+          where: { isActive: true, isApproved: true },
+          include: {
+            store: { select: { id: true, name: true, isVerified: true, slug: true } },
+            reviews: { select: { rating: true } },
+            _count: { select: { reviews: true } },
+          },
+          orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
         },
-        orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+        reviews: {
+          include: { user: { select: { name: true } } },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+        _count: { select: { products: true, reviews: true } },
       },
-      reviews: {
-        include: { user: { select: { name: true } } },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-      },
-      _count: { select: { products: true, reviews: true } },
-    },
-  })
+    })
+  } catch {
+    return null
+  }
 }
 
 export default async function SellerPage({ params }: PageProps) {

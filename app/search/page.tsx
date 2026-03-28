@@ -73,22 +73,25 @@ async function searchProducts(params: SearchParams) {
       ? { views: 'desc' }
       : { createdAt: 'desc' }
 
-  const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: {
-        store: { select: { id: true, name: true, isVerified: true, slug: true } },
-        reviews: { select: { rating: true } },
-        _count: { select: { reviews: true } },
-      },
-      orderBy,
-      skip,
-      take: PAGE_SIZE,
-    }),
-    prisma.product.count({ where }),
-  ])
-
-  return { products, total, pages: Math.ceil(total / PAGE_SIZE) }
+  try {
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        include: {
+          store: { select: { id: true, name: true, isVerified: true, slug: true } },
+          reviews: { select: { rating: true } },
+          _count: { select: { reviews: true } },
+        },
+        orderBy,
+        skip,
+        take: PAGE_SIZE,
+      }),
+      prisma.product.count({ where }),
+    ])
+    return { products, total, pages: Math.ceil(total / PAGE_SIZE) }
+  } catch {
+    return { products: [], total: 0, pages: 0 }
+  }
 }
 
 async function SearchResults({ searchParams }: { searchParams: SearchParams }) {

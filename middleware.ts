@@ -4,17 +4,22 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // NextAuth v5 renamed the session cookie
-  const secureCookie = req.nextUrl.protocol === 'https:'
-  const cookieName = secureCookie
-    ? '__Secure-authjs.session-token'
-    : 'authjs.session-token'
+  let token = null
+  try {
+    const secureCookie = req.nextUrl.protocol === 'https:'
+    const cookieName = secureCookie
+      ? '__Secure-authjs.session-token'
+      : 'authjs.session-token'
 
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-    cookieName,
-  })
+    token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+      cookieName,
+    })
+  } catch {
+    // Auth error — treat as unauthenticated, redirect to login
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
 
   if (pathname.startsWith('/dashboard')) {
     if (!token) {

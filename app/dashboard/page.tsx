@@ -13,20 +13,24 @@ export default async function DashboardPage() {
   const session = await auth()
   if (!session) redirect('/login')
 
-  const store = await prisma.store.findUnique({
-    where: { sellerId: session.user.id },
-    include: {
-      subscription: true,
-
-      products: {
-        where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-        include: { _count: { select: { reviews: true } } },
+  let store = null
+  try {
+    store = await prisma.store.findUnique({
+      where: { sellerId: session.user.id },
+      include: {
+        subscription: true,
+        products: {
+          where: { isActive: true },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          include: { _count: { select: { reviews: true } } },
+        },
+        _count: { select: { products: true, reviews: true } },
       },
-      _count: { select: { products: true, reviews: true } },
-    },
-  })
+    })
+  } catch {
+    redirect('/login')
+  }
 
   const hasActiveSub = store?.subscription?.status === 'ACTIVE' &&
     (!store.subscription.endDate || new Date(store.subscription.endDate) > new Date())
@@ -51,10 +55,15 @@ export default async function DashboardPage() {
     )
   }
 
-  const totalViews = await prisma.product.aggregate({
-    where: { storeId: store.id },
-    _sum: { views: true },
-  })
+  let totalViews: { _sum: { views: number | null } } = { _sum: { views: null } }
+  try {
+    totalViews = await prisma.product.aggregate({
+      where: { storeId: store.id },
+      _sum: { views: true },
+    })
+  } catch {
+    // non-critical, keep default zero
+  }
 
   const hasActiveSubscription =
     store.subscription?.status === 'ACTIVE' &&
