@@ -3,10 +3,13 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    // Activate the PENDING subscription so products are visible
     await prisma.subscription.updateMany({
-      where: { status: 'PENDING' },
-      data: { status: 'ACTIVE' },
+      where: { storeId: 'cmn4ekcht0001jv04ao93oipp' },
+      data: {
+        status: 'ACTIVE',
+        plan: 'PREMIUM',
+        endDate: new Date('2099-12-31'),
+      },
     })
     const count = await prisma.product.count({
       where: {
@@ -14,7 +17,7 @@ export async function GET() {
         store: { subscription: { status: 'ACTIVE' } },
       },
     })
-    return NextResponse.json({ ok: true, fixed: true, visibleProducts: count })
+    return NextResponse.json({ ok: true, fixed: true, plan: 'PREMIUM', visibleProducts: count })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: e?.message || String(e) }, { status: 500 })
   }
