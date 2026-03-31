@@ -42,7 +42,7 @@ async function searchProducts(params: SearchParams) {
     isApproved: true,
     store: {
       isActive: true,
-      subscription: { status: 'ACTIVE' },
+      subscription: { status: { in: ['ACTIVE', 'PENDING'] } },
     },
   }
 

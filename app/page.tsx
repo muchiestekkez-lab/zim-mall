@@ -13,7 +13,7 @@ async function getFeaturedProducts() {
         isApproved: true,
         store: {
           isActive: true,
-          subscription: { status: 'ACTIVE' },
+          subscription: { status: { in: ['ACTIVE', 'PENDING'] } },
         },
       },
       include: {

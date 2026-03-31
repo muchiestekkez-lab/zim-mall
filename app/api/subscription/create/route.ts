@@ -18,6 +18,7 @@ export async function POST(req: Request) {
 
     const store = await prisma.store.findFirst({
       where: { id: storeId, sellerId: session.user.id },
+      include: { subscription: true },
     })
     if (!store) {
       return NextResponse.json({ error: 'Store not found' }, { status: 404 })
@@ -29,6 +30,11 @@ export async function POST(req: Request) {
       `ZIM MALL ${planConfig.name} Plan - 1 Month`
     )
 
+    const existing = store.subscription
+    const isCurrentlyActive = existing?.status === 'ACTIVE'
+
+    // If already active, keep it active — only update the PayPal order ID
+    // so products stay visible while the seller completes the new payment
     await prisma.subscription.upsert({
       where: { storeId: store.id },
       create: {
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
       },
       update: {
         plan: plan as any,
-        status: 'PENDING',
+        status: isCurrentlyActive ? 'ACTIVE' : 'PENDING',
         amount: planConfig.price,
         paypalOrderId: orderId,
         paypalPayerId: null,
