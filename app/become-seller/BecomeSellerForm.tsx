@@ -65,12 +65,23 @@ export default function BecomeSellerForm({ userEmail, userName }: Props) {
             <CheckCircle className="h-10 w-10 text-green-500" />
           </div>
           <div className="inline-block bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-            #{promoWon.number} of 50 Early Sellers
+            #{promoWon.number} of 30 Early Sellers 🎉
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Thank You for Joining ZIM MALL!</h1>
           <p className="text-gray-600 mb-2">{promoWon.message}</p>
+          <div className="bg-brand-50 border border-brand-200 rounded-xl p-4 mb-6 text-left">
+            <p className="text-sm font-semibold text-brand-800 mb-2">Your FREE Business Plan includes:</p>
+            <ul className="space-y-1">
+              {['100 product listings', 'Featured listings', 'Priority search placement', 'Store analytics', 'Customer contact via WhatsApp & Phone'].map(f => (
+                <li key={f} className="flex items-center gap-2 text-sm text-brand-700">
+                  <CheckCircle className="h-4 w-4 flex-shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
           <p className="text-sm text-gray-500 mb-8">
-            Your store is active and your FREE 1-month Starter subscription has been applied. Start listing your products now!
+            Your free Business plan is active for 1 month. Start listing your products right now!
           </p>
           <button
             onClick={() => { window.location.href = '/dashboard' }}

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-const FREE_PROMO_LIMIT = 50
+const FREE_PROMO_LIMIT = 30
 
 export async function POST(req: Request) {
   try {
@@ -62,12 +62,12 @@ export async function POST(req: Request) {
             isActive: true,
             subscription: {
               create: {
-                plan: 'STARTER',
+                plan: 'BUSINESS',
                 status: 'ACTIVE',
                 amount: 0,
                 startDate,
                 endDate,
-                paypalOrderId: 'FREE_PROMO_STARTER',
+                paypalOrderId: 'FREE_PROMO_BUSINESS',
               },
             },
           },
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
         success: true,
         freePromo: true,
         promoNumber: promoUsed + 1,
-        message: `You are one of our first ${FREE_PROMO_LIMIT} sellers! Enjoy 1 month FREE Starter subscription on us.`,
+        message: `You are one of our first ${FREE_PROMO_LIMIT} sellers! Enjoy 1 month FREE Business plan on us. Thank you for being an early supporter of ZIM MALL!`,
       })
     }
 
