@@ -9,13 +9,18 @@ export default async function NewProductPage() {
   const session = await auth()
   if (!session) redirect('/login')
 
-  const store = await prisma.store.findUnique({
-    where: { sellerId: session.user.id },
-    include: {
-      subscription: true,
-      _count: { select: { products: true } },
-    },
-  })
+  let store = null
+  try {
+    store = await prisma.store.findUnique({
+      where: { sellerId: session.user.id },
+      include: {
+        subscription: true,
+        _count: { select: { products: true } },
+      },
+    })
+  } catch {
+    redirect('/dashboard')
+  }
 
   if (!store) redirect('/dashboard/store')
 

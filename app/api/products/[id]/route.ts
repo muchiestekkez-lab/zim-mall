@@ -162,15 +162,25 @@ export async function DELETE(_req: Request, context: Params) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const store = await prisma.store.findUnique({
-      where: { sellerId: session.user.id },
-    })
+    if (session.user.role !== 'ADMIN') {
+      const store = await prisma.store.findUnique({
+        where: { sellerId: session.user.id },
+      })
+      if (!store) {
+        return NextResponse.json({ error: 'Store not found' }, { status: 403 })
+      }
+      const product = await prisma.product.findFirst({
+        where: { id, storeId: store.id },
+      })
+      if (!product) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+      }
+      await prisma.product.delete({ where: { id } })
+      return NextResponse.json({ success: true })
+    }
 
     const product = await prisma.product.findFirst({
-      where: {
-        id: id,
-        ...(session.user.role !== 'ADMIN' && store ? { storeId: store.id } : {}),
-      },
+      where: { id },
     })
 
     if (!product) {
