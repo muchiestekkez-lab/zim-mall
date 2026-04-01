@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     // Count how many sellers have already received the free promo
     const promoUsed = await prisma.subscription.count({
-      where: { paypalOrderId: 'FREE_PROMO_STARTER' },
+      where: { paypalOrderId: 'FREE_PROMO_BUSINESS' },
     })
 
     const qualifiesForFreePromo = promoUsed < FREE_PROMO_LIMIT
